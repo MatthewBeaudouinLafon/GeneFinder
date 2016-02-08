@@ -108,20 +108,16 @@ def find_all_ORFs_oneframe(dna):
    
 
     # Find the start codon in that frame
-    iter = 0
-    codon = dna[:iter+3]
-
-    while codon != 'ATG':
-        iter += 3
-        codon = dna[:iter+3]
+    Iter = 0
+    codon = dna[:Iter+3]
 
     # Find the rest of the sequence
-    while iter < len(dna):
-        if dna[iter:iter+3] == 'ATG':
-            demORFs.append(rest_of_ORF(dna[iter:])) # Add next ORF
-            iter = iter + len(demORFs[-1]) + 3  # Move by how long the ORF was, add three to skip the stop codon
+    while Iter < len(dna):
+        if dna[Iter:Iter+3] == 'ATG':
+            demORFs.append(rest_of_ORF(dna[Iter:])) # Add next ORF
+            Iter = Iter + len(demORFs[-1]) + 3  # Move by how long the ORF was, add three to skip the stop codon
         else:
-            iter += 3
+            Iter += 3
 
     return demORFs
 
@@ -201,7 +197,7 @@ def longest_ORF_noncoding(dna, num_trials):
         if uberLongestORF < longestORFinShuffle:  # Make it the new uberLongestORF if it is longer 
             uberLongestORF = longestORFinShuffle
 
-    return len(uberLongestORF)
+    return uberLongestORF
 
 
 def coding_strand_to_AA(dna):
@@ -236,11 +232,11 @@ def gene_finder(dna):
         dna: a DNA sequence
         returns: a list of all amino acid sequences coded by the sequence dna.
     """
-    threshold = longest_ORF_noncoding(dna, 15)
+    threshold = longest_ORF_noncoding(dna, 1500)
     allORFs = find_all_ORFs_both_strands(dna)
-    longORFs = [ORF for ORF in allORFs if len(ORF) > threshold] # Oh yeah comprehend that list
+    demAminos = [coding_strand_to_AA(ORF) for ORF in allORFs if len(ORF) > threshold] # Oh yeah comprehend that list
 
-    return coding_strand_to_AA( longORFs )
+    return  demAminos
 
 
 if __name__ == "__main__":
